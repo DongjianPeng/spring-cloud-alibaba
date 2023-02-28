@@ -47,7 +47,7 @@ import org.springframework.context.annotation.Configuration;
 @AutoConfigureAfter({ AutoServiceRegistrationConfiguration.class,
 		AutoServiceRegistrationAutoConfiguration.class,
 		NacosDiscoveryAutoConfiguration.class })
-public class NacosServiceRegistryAutoConfiguration {
+public class NacosServiceRegistryAutoConfiguration { // Nacos服务核心注册类
 
 	@Bean
 	public NacosServiceRegistry nacosServiceRegistry(
@@ -66,6 +66,13 @@ public class NacosServiceRegistryAutoConfiguration {
 				nacosDiscoveryProperties, context);
 	}
 
+	/**
+	 * Nacos服务自动注册，这个Bean实现了ApplicationListener，看onEvent方法
+	 * @param registry
+	 * @param autoServiceRegistrationProperties
+	 * @param registration
+	 * @return
+	 */
 	@Bean
 	@ConditionalOnBean(AutoServiceRegistrationProperties.class)
 	public NacosAutoServiceRegistration nacosAutoServiceRegistration(
