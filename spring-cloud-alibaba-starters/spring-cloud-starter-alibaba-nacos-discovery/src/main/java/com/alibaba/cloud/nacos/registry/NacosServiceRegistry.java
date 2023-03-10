@@ -56,9 +56,11 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
 	}
 
+	// WebServerInitializedEvent事件监听到之后最终调用的方法
 	@Override
 	public void register(Registration registration) {
 
+		// 拿到服务名，一般都是默认配置：${spring.cloud.nacos.discovery.service:${spring.application.name:}}
 		if (StringUtils.isEmpty(registration.getServiceId())) {
 			log.warn("No service to register for nacos client...");
 			return;
@@ -66,11 +68,14 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 		NamingService namingService = namingService();
 		String serviceId = registration.getServiceId();
+		// 拿到Group，默认值 DEFAULT_GROUP
 		String group = nacosDiscoveryProperties.getGroup();
 
+		// 组装服务实例
 		Instance instance = getNacosInstanceFromRegistration(registration);
 
 		try {
+			// 把组装好的服务实例注册到Nacos Server
 			namingService.registerInstance(serviceId, group, instance);
 			log.info("nacos registry, {} {} {}:{} register finished", group, serviceId,
 					instance.getIp(), instance.getPort());
@@ -170,14 +175,20 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		return null;
 	}
 
+	// 组装服务实例
 	private Instance getNacosInstanceFromRegistration(Registration registration) {
 		Instance instance = new Instance();
+		// 拿到ip地址
 		instance.setIp(registration.getHost());
 		instance.setPort(registration.getPort());
+		// 服务权重，默认1
 		instance.setWeight(nacosDiscoveryProperties.getWeight());
+		// 集群名称，默认DEFAULT
 		instance.setClusterName(nacosDiscoveryProperties.getClusterName());
 		instance.setEnabled(nacosDiscoveryProperties.isInstanceEnabled());
+		// 元数据
 		instance.setMetadata(registration.getMetadata());
+		// 是否临时实例，默认true
 		instance.setEphemeral(nacosDiscoveryProperties.isEphemeral());
 		return instance;
 	}

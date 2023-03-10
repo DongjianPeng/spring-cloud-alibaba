@@ -33,6 +33,7 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnNacosDiscoveryEnabled
 public class NacosDiscoveryAutoConfiguration {
 
+	// 这是Nacos的属性配置 spring.cloud.nacos.discovery开头
 	@Bean
 	@ConditionalOnMissingBean
 	public NacosDiscoveryProperties nacosProperties() {
@@ -42,7 +43,9 @@ public class NacosDiscoveryAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public NacosServiceDiscovery nacosServiceDiscovery(
+			// 属性配置
 			NacosDiscoveryProperties discoveryProperties,
+			// todo
 			NacosServiceManager nacosServiceManager) {
 		return new NacosServiceDiscovery(discoveryProperties, nacosServiceManager);
 	}
